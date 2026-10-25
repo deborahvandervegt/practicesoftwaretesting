@@ -1,5 +1,19 @@
 {
+  "name": "practicesoftwaretesting",
+  "version": "1.0.0",
+  "scripts": {
+    "cy:open": "cypress open",
+    "cy:run": "cypress run",
+    "typecheck": "tsc --noEmit"
+  },
   "devDependencies": {
-    "cypress": "^16.2.0"
+    "@badeball/cypress-cucumber-preprocessor": "^28.0.1",
+    "@bahmutov/cypress-esbuild-preprocessor": "^2.2.8",
+    "@types/node": "^22.0.0",
+    "cypress": "^16.2.0",
+    "typescript": "^7.0.2"
+  },
+  "cypress-cucumber-preprocessor": {
+    "stepDefinitions": "cypress/e2e/webshop.ts"
   }
 }
