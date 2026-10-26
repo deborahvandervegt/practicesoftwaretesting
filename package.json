@@ -14,6 +14,6 @@
     "typescript": "^7.0.2"
   },
   "cypress-cucumber-preprocessor": {
-    "stepDefinitions": "cypress/e2e/webshop.ts"
+    "stepDefinitions": "cypress/e2e/*.ts"
   }
 }
