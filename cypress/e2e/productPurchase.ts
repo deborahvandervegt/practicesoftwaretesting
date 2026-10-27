@@ -14,10 +14,14 @@ When("I set the quantity to {int}", (quantity: number) => {
 
 When("I add the product to my cart", () => {
   cy.get('[data-test="add-to-cart"]').click();
+  cy.wait(1000); // Wait for the cart to update after adding the product
 });
 
-When("I proceed to checkout from the {string}", () => {
+When("I go to the shopping cart", () => {
   cy.get('[data-test="nav-cart"]').click();
+});
+
+When("I proceed to checkout from the cart", () => {
   cy.get('[data-test="proceed-1"]').click();
 
   // Step 1: Sign in or continue as guest
@@ -85,6 +89,29 @@ When("I complete the payment", () => {
   cy.get('[data-test="finish"]').click();
 });
 
+When("I go back", () => {
+  cy.go('back');
+});
+
 Then("I should see the order confirmation", () => {
   cy.get('[data-test="payment-success-message"]').should("be.visible");
 });
+
+Then("I see {int} products in my shopping cart", (count: number) => {
+  cy.get('[data-test="product-title"]').should("have.length", count);
+});
+
+When("I remove a product", () => {
+  cy.get('[data-icon="xmark"]').first().click();
+});
+
+When("I change quantity to {string}", (quantity: string) => {
+  cy.wait(100);
+  cy.get('[data-test="product-quantity"]').clear();
+  cy.get('[data-test="product-quantity"]').type(quantity);
+  cy.get('[data-test="product-quantity"]').blur() 
+});
+
+Then("I see total price {string}", (totalPrice: string) => {
+  cy.get('[data-test="line-price"]').should("have.text", totalPrice);
+});  
