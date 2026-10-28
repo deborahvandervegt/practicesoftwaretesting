@@ -11,9 +11,9 @@ Feature: Shopping cart
     Then I see 2 products in my shopping cart
     When I remove a product
     Then I see 1 products in my shopping cart
-    When I change quantity to "2"
+    When I change quantity to "2" in the "cart"
     Then I see total price "$96.82"
-    When I change quantity to "100"
+    When I change quantity to "100" in the "cart"
     Then I see total price "$4,792.59"
-    When I change quantity to "-1"
+    When I change quantity to "-1" in the "cart"
     Then I see total price "$48.41"

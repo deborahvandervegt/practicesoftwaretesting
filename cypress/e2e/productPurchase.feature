@@ -3,7 +3,7 @@ Feature: practicesoftwaretesting.com
   Scenario Outline: Purchase products end to end - <description>
     Given I visit practicesoftwaretesting.com
     When I select "<product>" from the product overview
-    And I set the quantity to <quantity>
+    And I change quantity to "<quantity>" in the "detail"
     And I add the product to my cart
     And I go to the shopping cart
     And I proceed to checkout from the cart

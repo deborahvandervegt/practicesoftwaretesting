@@ -8,8 +8,12 @@ When("I select {string} from the product overview", (product: string) => {
   cy.contains("a.card", product).click();
 });
 
-When("I set the quantity to {int}", (quantity: number) => {
-  cy.get('[data-test="quantity"]').clear().type(quantity.toString());
+When("I change quantity to {string} in the {string}", (quantity: string, source: string) => {
+  if (source === "detail") {
+    cy.get('[data-test="quantity"]').clear().type(quantity);
+  } else if (source === "cart") {
+    cy.get('[data-test="product-quantity"]').clear().type(quantity);
+  }
 });
 
 When("I add the product to my cart", () => {
@@ -102,14 +106,32 @@ Then("I see {int} products in my shopping cart", (count: number) => {
 });
 
 When("I remove a product", () => {
+  cy.intercept("DELETE", "**/carts/*/product/*").as("deleteItem");
+  cy.intercept("GET", "**/carts/*").as("getCartAfterDelete");
+
   cy.get('[data-icon="xmark"]').first().click();
+
+  // Wait for the deletion and the subsequent cart refresh so the cart table
+  // has finished re-rendering before the next step interacts with it.
+  cy.wait("@deleteItem");
+  cy.wait("@getCartAfterDelete");
 });
 
 When("I change quantity to {string}", (quantity: string) => {
-  cy.wait(100);
+  cy.intercept("PUT", "**/carts/*/product/quantity").as("updateQuantity");
+  cy.intercept("GET", "**/carts/*").as("getCartAfterUpdate");
+
+  cy.get('[data-test="product-quantity"]').should("not.have.attr", "disabled");
   cy.get('[data-test="product-quantity"]').clear();
+  cy.get('[data-test="product-quantity"]').should("not.have.attr", "disabled");
   cy.get('[data-test="product-quantity"]').type(quantity);
-  cy.get('[data-test="product-quantity"]').blur() 
+  cy.get('[data-test="product-quantity"]').blur();
+
+  // Wait for the quantity update and the cart refresh it triggers to finish
+  // before the step resolves, so the input isn't mid re-render (and possibly
+  // disabled/stale) when the next step interacts with it.
+  cy.wait("@updateQuantity");
+  cy.wait("@getCartAfterUpdate");
 });
 
 Then("I see total price {string}", (totalPrice: string) => {
